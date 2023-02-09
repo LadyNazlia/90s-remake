@@ -1,0 +1,682 @@
+
+<html>
+<head>
+<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
+<title>National Grid Webaccess Login Screen 3.0.5</title>
+
+
+<script language="JavaScript">
+//
+// help.js
+// Copyright (c) 2001 - 2004 Citrix Systems, Inc. All Rights Reserved.
+//
+
+// Opens the online help window.
+//
+function openHelp(url) {
+    window.open(url, "nfuse_user_help", "location=no,toolbar=no,resizable=yes");
+}
+
+
+</script>
+
+<script language="JavaScript">
+//
+// login.js
+// Copyright (c) 2001 - 2004 Citrix Systems, Inc. All Rights Reserved.
+//
+
+function clearForm(loginForm) {
+    loginForm.user.value = "";
+    loginForm.password.value = "";
+    if (loginForm.domain) {
+        if (loginForm.domain.type != "hidden") {
+            loginForm.domain.value = "";
+        }
+    }
+    if (loginForm.context != null) {
+        loginForm.context.value = "";
+    }
+    setDefaultFocus();
+}
+
+function setFocus(loginForm) {
+    if (loginForm.tokencode && (! loginForm.tokencode.disabled)) {
+        loginForm.tokencode.focus();
+    } else if (loginForm.PIN1 && (! loginForm.PIN1.disabled)) {
+        loginForm.PIN1.focus();
+    } else if (loginForm.LoginType && (! loginForm.LoginType.disabled)) {
+        if (loginForm.LoginType.value == "Explicit") {
+            if (!loginForm.user.disabled) {
+                loginForm.user.focus();
+            }
+        } else {
+            if (loginForm.LoginType.options && (! loginForm.LoginType.options.disabled)) {
+                if (loginForm.LoginType.options[loginForm.LoginType.selectedIndex].value  == "Explicit") {
+                    if (loginForm.user.readonly) {
+                        loginForm.context.focus();
+                    } else {
+                        loginForm.user.focus();
+                    }
+                } else {
+                    var usrAgt = navigator.userAgent.toLowerCase();
+                    var nav4 = ((usrAgt.indexOf('mozilla/4') != -1)
+                                && (usrAgt.indexOf('msie') == -1)
+                                && (usrAgt.indexOf('spoofer') == -1)
+                                && (usrAgt.indexOf('compatible') == -1)
+                                && (usrAgt.indexOf('opera') == -1)
+                                && (usrAgt.indexOf('webtv') == -1));
+
+                    if (!nav4 && (! document.all.login.disabled)) {
+                        document.all.login.focus();
+                    }
+                }
+            }
+        }
+    }
+}
+
+function setDefaultFocus() {
+    var form = document.forms[0];
+    if (form) {
+        setFocus(form);
+    }
+}
+
+function resetSessionTimeout() {
+}
+
+function onLoadLayout() {
+    setDefaultFocus();
+    return;
+}
+
+function usernameFieldContainsDomain(f) {
+
+    return (f.user.value.indexOf("@") != -1) ||
+           (f.user.value.indexOf("\\") != -1);
+
+}
+
+function onChangeLoginType(f) {
+     var explicit = (f.LoginType.options[f.LoginType.selectedIndex].value == "Explicit");
+     var anonymous =  (f.LoginType.options[f.LoginType.selectedIndex].value == "Anonymous");
+
+     setDisabled(f.user, ! explicit);
+     setDisabled(f.password, ! explicit);
+     setDisabled(f.domain, ! explicit || usernameFieldContainsDomain(f));
+     setDisabled(f.context, ! explicit);
+     setDisabled(f.tree, ! explicit);
+     setDisabled(f.passcode, ! explicit);
+
+     setDisabled(f.ReconnectAtLogin, anonymous);
+     setDisabled(f.ReconnectAtLoginOption, anonymous);
+
+
+     setDisabled(document.all.lblCredentials, ! explicit);
+     setDisabled(document.all.lblUserName, ! explicit);
+     setDisabled(document.all.lblPasswd, ! explicit);
+     setDisabled(document.all.lblDomain, ! explicit || usernameFieldContainsDomain(f));
+     setDisabled(document.all.lblContext, ! explicit);
+     setDisabled(document.all.lblTree, ! explicit);
+     setDisabled(document.all.lblPasscode, ! explicit);
+
+     setDisabled(document.all.lblReconnectLogin, anonymous);
+
+}
+
+function onUsernameTextEntry(f) {
+
+    setDisabled(f.domain, usernameFieldContainsDomain(f));
+
+    setDisabled(document.all.lblDomain, usernameFieldContainsDomain(f));
+
+}
+
+function setDisabled(item, disabled) {
+    if (item) {
+        item.disabled = disabled;
+    }
+}
+
+function onClickReconnectAtLogin(f) {
+    f.ReconnectAtLoginOption.disabled = ! f.ReconnectAtLogin.checked;
+}
+
+</script>
+
+
+<body text="#000000" bgcolor="#FFFFFF" LINK="#000000" VLINK="#000000" ALINK="#000000" topmargin='0' leftmargin='0' marginheight="0" marginwidth="0" onLoad="onLoadLayout();">
+
+
+<style type="text/css">
+<!--
+.loginEntries
+{
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: x-small;
+    font-weight: bold;
+    color: #000000;
+    width: 150px
+}
+
+.loginOptionEntries
+{
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: xx-small;
+    color: #000000;
+    width: 230px
+}
+
+.loginOptionLongEntries
+{
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: xx-small;
+    color: #000000;
+    width: 300px
+}
+
+.loginTreeEntry
+{
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: xx-small;
+    color: #000000;
+    background-color: #A7A7A7;
+    width: 200px
+}
+
+.appsettingsEntries
+{
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: xx-small;
+    color: #000000;
+}
+
+.appsettingsOptionEntries
+{
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: xx-small;
+    color: #000000;
+}
+
+.changePasswordEntries
+{
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: xx-small;
+    width: 150px;
+}
+
+.buttons
+{
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: x-small;
+}
+
+.xxsNorm
+{
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: xx-small;
+    Color: #ffffff  
+}
+
+.xxsNormBlack
+{
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: xx-small;
+    Color: Black;
+}
+
+.xxsItalic
+{
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: xx-small;
+    font-style: italic;
+}
+
+.xxsBold
+{
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: xx-small;
+    font-weight: bold;
+    Color: #ffffff;
+}
+
+.xxsBoldBlack
+{
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: xx-small;
+    font-weight: bold;
+    Color: Black;
+}
+
+
+.xsNorm
+{
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: x-small;
+    Color: #FFFFFF
+
+.xsNormBlack
+{
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: x-small;
+    Color: Black;
+
+}
+
+}
+
+.xsRedItalic
+{
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: x-small;
+    color: red;
+    font-style: italic;
+}
+
+.xsRed
+{
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: x-small;
+    color: red;
+}
+
+.xsBold
+{
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: x-small;
+    font-weight: bold;
+    Color: #ffffff
+}
+
+.xsBoldBlack
+{
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: x-small;
+    font-weight: bold;
+    Color: Black;
+}
+
+.sBold
+{
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: small;
+    font-weight: bold;
+}
+
+.sBoldWhite
+{
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: small;
+    font-weight: bold;
+    color: #FFFFFF;
+}
+
+.mBold
+{
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: medium;
+    font-weight: bold;
+}
+
+.title
+{
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: medium;
+    font-weight: bold;
+}
+
+.italic
+{
+    font-style: italic;
+}
+
+A.appLinks
+{
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 8pt;
+    font-weight: bold;
+    color: #FFFFFF;
+    text-decoration: none
+}
+
+.appLinks
+{
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: x-small;
+    color: #FFFFFF;
+    text-decoration: none
+}
+
+A.appLinks:hover
+{
+    color: #FFFF00;
+}
+
+A.appLinksSmall
+{
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: xx-small;
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+A.appLinksSmall:hover
+{
+    color: #FFFF00;
+}
+
+A.appLinksSmallOff
+{
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: xx-small;
+    color: #4169E1;
+    text-decoration: none;
+}
+
+TD.greygradbar
+{
+    background-color: #C8C8C8;
+    background-image: url("media/greygrad.gif");
+    background-repeat: repeat-x;
+}
+-->
+</style>
+
+</head>
+
+
+
+<table align= "right" width="100%" border="12" BorderColor="#0066cc" cellspacing="0" cellpadding="0" >
+  <tr>
+
+  </tr>
+  <tr>
+    <td align="center" valign="top" width="100%" colspan="2">
+      <table width="100%" border="3" Bordercolor="#dfdfdf" cellspacing="0" cellpadding="10">
+        <tr>
+          <td>
+
+            <table border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td width="5"><IMG height="0" src="media/spacer.gif" alt=""></td>
+                <td valign="top">
+
+	    <a> <img src="img/profile.png" width="300" height="66" Align="CENTER" 		Border="0"> </a>
+
+                  <table  width="100%" border="0" cellspacing="5" cellpadding="5">
+                    <tr>
+                      <td valign="middle" align="center">
+
+<hr size="1" noshade align="center">
+<p align="center"><b><font face="Arial" size="+1">Webaccess Application Portal</font></b></p>
+                        <table BGColor="#0066cc"  border="1" cellspacing="0" cellpadding="0"                          >
+                          <tr>
+                            <td>
+                             <table border="0" WIDTH="300"
+                               cellspacing="0" cellpadding="0">
+                                <tr>
+                                  <td>
+
+                                    <table border="0" cellspacing="0" bgcolor="#ffffff"
+                                      cellpadding="0" width="100%">
+                                      <tr><td height="5"><IMG height="1" width="1" src="media/spacer.gif" alt=""></td></tr>
+                                      <tr>
+
+                                        <td valign="top" class="greygradbar"
+                                          height="29">
+
+                                          <a class="appLinks"
+                                          HREF="JavaScript:openHelp('help.aspx?helpPage=Login')"
+                                          onClick="resetSessionTimeout()">
+                                          <img SRC="media/help.gif" BORDER="0"
+                                          align="right" vspace="1" hspace="1"
+                                          alt="Help"
+                                          title="Click here to access the online help.">
+                                          </a>
+
+                                          <span class="xxsNorm">&nbsp;</span><span class="title">Login</span>
+                                        </td>
+                                      </tr>
+                                      <tr><td height="1" bgcolor=dfdfdf><IMG height="2" width="1" src="media/spacer.gif" alt=""></td></tr>
+                                    </table>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td>
+
+<table width="100%" border="0"  cellspacing="0" cellpadding="0">
+
+  <form method="POST" action="login.aspx" name="NFuseForm" autocomplete="off">
+  <input type='hidden' name='state'
+  value='LOGIN'>
+
+<tr>
+  <td>
+    <table border='0' cellspacing='5' cellpadding='5'>
+
+
+      <input type='hidden' name='LoginType' value='Explicit'>
+
+      <tr>
+        <td colspan='3'>
+
+          <table border='0' cellspacing='5' cellpadding='5'>
+            <tr align='left'>
+              <td align='left' valign='top' nowrap>
+                <img src='media/ng_dot.gif' width='10' height='10' vspace='0'
+                      hspace='3' alt='o' name='ngDot'>
+		 <label id='I' class='xsBold' for='user'
+                  title="Enter your username."
+                  >
+                Username: 
+                </label>
+
+
+                <input type='text' name='user' id='user' 
+
+                class='loginEntries' value=''
+                maxlength='256' 
+                onkeyup='onUsernameTextEntry(this.form)'>
+              </td>
+	      </TR>
+            </tr>
+            <tr align='left'>
+              <td align='left' valign='top' nowrap>
+                <img src='media/ng_dot.gif' width='10' height='10' vspace='0'
+                      hspace='3' alt='o' name='ngDot'>
+		  <label id='lblPasswd' class='xsBold' for='password'
+                  title="Enter your password."
+                  >
+                Password :
+                </label>
+
+                <input type='password' name='password' id='password'
+                class='loginEntries' value=''
+                maxlength='256' >
+              </td>
+	      </TR>
+            </tr>
+
+            <tr align='left'>
+              <td align='left' valign='top' nowrap>
+          	<img src='media/ng_dot.gif' width='10' height='10' vspace='0'
+                  hspace='3' alt='o' name='ngDot'>	
+
+		<label id='lblPasscode' for='passcode' class='xsBold'
+                  title="Enter your passcode.">
+                Passcode :
+                </label>
+
+
+                <input type='password' name='passcode' id='passcode'
+                class='loginEntries' maxlength='256'>
+              </td>
+            </tr>
+	    </tR>
+
+          </table>
+
+        </td>
+      </tr>
+    </table>
+  </td>
+</tr>
+
+<tr>
+  <td width="100%" height="2" bgcolor="#DfDFDF"><img height="1" src="media/spacer.gif" width="5" alt=""></td>
+</tr>
+<tr>
+  <td align='Right'>
+    <table border='0' cellspacing='2' cellpadding='2'>
+      <tr valign='middle'>
+        <td align='right' colspan='3'>
+          <input type='submit' name='login'
+            value='Login'
+            title="Click this button to log in."
+            
+            class='buttons'>
+        </td>
+      </tr>
+    </table>
+  </td>
+</tr>
+
+  </form>
+</table>
+
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+                <td valign="top" width="100%">
+                  <table cellpadding="5">
+                    <tr>
+                      <td>
+                        
+<table border="0" cellspacing="3" cellpadding="0" width="100%">
+  <tr>
+    <td>
+      <table border="0" cellspacing="0" cellpadding="0" width="100%" bgcolor="#0066cc">
+        <tr>
+          <td>
+            <table border="0" cellspacing="5" cellpadding="0" width="100%">
+              <tr align="left" valign="middle">
+                <td class="sBoldWhite">
+                  Welcome to the National Grid Webaccess Portal<br>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td width="100%" height="2" bgcolor="#dfdfdf"><img height=1 src="media/spacer.gif" width=5 alt=""></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr align="left" valign="top">
+    <td>
+      <table border="0" cellspacing="5" cellpadding="0" width="100%">
+        <tr align="left">
+          <td>
+            <p><span class="sBold"></span></p>
+            <p><span class="xsNorm"><font color=red> <b> WARNING: Access to this System is for Authorized Personnel Only! </B></font> <BR> <BR> To log in to the <B>National Grid Webaccess Application Portal</B>, Please enter your username and password in the boxes on the left, and click on the Login button to continue.<BR><BR>If you do not know your login information, please contact the Enterprise Support Center at <B>1-877-373-1112.</B></span></p>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+                      </td>
+                    </tr>
+                    <tr>
+                      <td valign="top">
+                        
+<table border="0" cellspacing="3" cellpadding="0" width="100%">
+  <tr>
+    <td>
+
+      <table border="0" cellspacing="0" cellpadding="0" width="100%" bgcolor="#0066cc">
+        <tr>
+          <td>
+            <table border="0" cellspacing="5" cellpadding="0" width="100%">
+              <tr align="left" valign="middle">
+
+
+
+                <td class="sBoldwhite">
+                  Message Center<br>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td width="100%" height="2" bgcolor="#dfdfdf"><img height=1 src="media/spacer.gif" width=5 alt=""></td>
+
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <table border="0">
+        <tr>
+          <td class="xsNorm">
+            <p>
+            The Message Center displays any informational or error messages that may occur.
+            </p>
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <table id="timeoutTable" border="0">
+            </table>
+          </td>
+        </tr>
+
+	
+
+
+        <tr>
+          <td>
+            <table border='0' cellspacing='5' cellpadding='0' width='100%'><colgroup span='1' width='32'><tr><td valign='top' width='32'><img src='img/warning.jpg' width='35' alt='Warning text follows'></td><td><span class='xsNorm'><font color=red><b>If you do not have the Citrix receiver installed, you must install\update this client in order to use the current version to launch any applications.</b> </font> <font color=red>You must install the Citrix Receiver Client to launch the applications.</font><p class='xsNorm'>Please Right-click on <b> BOTH </b> links below and Choose "Save Target As" to download the Installation instructions, & the Citrix Receiver 4.3.100 Client for Windows. Then follow the insructions to install the Citrix Receiver CLient.<BR><BR><a HREF="/Citrix/ICAWEB/en/ica32/Receiverinstall.pdf"><img src="media/PDF.jpg" width="24" height="24" align="left" border="0"><b>Installation Instructions for Citrix Receiver Client 4.3.100</b></b><a HREF="/Citrix/ICAWEB/en/ica32/CitrixReceiver4_3_100.exe"><BR><BR><img src="media/receiver.jpg" width="24" height="24" align="left" border="0"><b>Citrix Receiver 4.3.100</b></a><a HREF="/Citrix/ICAWEB/en/ica32/SymantecClass3SecureServerCA-G4.crt"><BR><br><BR><img src="media/tick.gif" width="24" height="24" align="left" border="0"><b>Intermediate Certificate Fix.</b></a></span></td></tr></table>
+          </td>
+        </tr>
+
+
+      </table>
+    </td>
+  </tr>
+
+</table>
+
+<img src="img/profile.png" width="229" height="60" align="right"  border="0">
+
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td width="100%" height="80" bgcolor="#0066cc" colspan="2"><IMG height="2" width="1" src="media/spacer.gif" alt=""></td>
+  </tr>
+</table>
+
+</body>
+</html>
